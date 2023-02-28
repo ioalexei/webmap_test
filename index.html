@@ -21,7 +21,7 @@
             let protocol = new pmtiles.Protocol();
             maplibregl.addProtocol("pmtiles",protocol.tile);
 
-            let PMTILES_URL = "https://protomaps.github.io/PMTiles/protomaps(vector)ODbL_firenze.pmtiles";
+            let PMTILES_URL = "https://51n/3w.xyz/tur_adm2.pmtiles";
 
             const p = new pmtiles.PMTiles(PMTILES_URL)
 
@@ -45,9 +45,9 @@
                         },
                         layers: [
                             {
-                                "id":"buildings",
+                                "id":"adm2",
                                 "source": "example_source",
-                                "source-layer":"landuse",
+                                "source-layer":"tur_adm2",
                                 "type": "fill",
                                 "paint": {
                                     "fill-color": "steelblue"
