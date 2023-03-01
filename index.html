@@ -22,33 +22,43 @@
 </head>
 <body>
     <div id="map"></div>
-    <script>
-        const key = 'jHKRGcVLQieliF2glneL';
-        const map = new maplibregl.Map({
-            container: 'map', // container id
-            style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${key}`, // style URL
-            center: [36.5, 37.5], // starting position [lng, lat]
-            zoom: 9 // starting zoom
-        });
-        map.addControl(new maplibregl.NavigationControl(), 'top-right');
-        map.on('error', function(err) {
-            throw new Error("To load the map, you must replace YOUR_MAPTILER_API_KEY_HERE first, see README");
-        });
-        // Define a source before using it to create a new layer
-        map.on('load', function () {
-            map.addSource('tur_adm2', {
-                type: 'vector',
-                data: 'https://api.maptiler.com/tiles/9b4afcdc-8b87-45c0-92b4-73106053d8f3/tiles.json?key=jHKRGcVLQieliF2glneL'
-            });
+<script>
+    const key = 'jHKRGcVLQieliF2glneL';
+    const map = new maplibregl.Map({
+        container: 'map', // container id
+        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${key}`, // style URL
+        center: [36.5, 37.5], // starting position [lng, lat]
+        zoom: 9 // starting zoom
+    });
 
-            map.addLayer({
-                id: 'tur_adm2',
-                // References the GeoJSON source defined above
-                // and does not require a `source-layer`
-                source: 'tur_adm2',
-                type: 'polygon'
-            });
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    map.on('error', function(err) {
+        throw new Error("To load the map, you must replace YOUR_MAPTILER_API_KEY_HERE first, see README");
+    });
+
+    // Define a source before using it to create a new layer
+    map.on('load', function () {
+        map.addSource('contours', {
+            type: 'vector',
+            url:
+                `https://api.maptiler.com/tiles/contours/tiles.json?key=${key}`
         });
-    </script>
+    map.addLayer({
+        'id': 'terrain-data',
+        'type': 'line',
+        'source': 'contours',
+        'source-layer': 'contour',
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#ff69b4',
+            'line-width': 1
+        }
+    });
+});
+
+</script>
 </body>
 </html>
