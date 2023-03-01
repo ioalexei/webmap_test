@@ -6,7 +6,23 @@
 	<link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
 </head>
 <body>
+	<style type="text/css">
+		#info {
+		display: block;
+		position: relative;
+		margin: 0px auto;
+		width: 50%;
+		padding: 10px;
+		border: none;
+		border-radius: 3px;
+		font-size: 12px;
+		text-align: center;
+		color: #222;
+		background: #fff;
+		}
+	</style>
 	<div id='map' style='width: 98%; height: 98%;'></div>
+	<pre id="info"></pre>
 	<script>
 		var map = new maplibregl.Map({
 		container: 'map',
@@ -14,5 +30,31 @@
 		center: [36.5, 37.5], // starting position [lng, lat]
 		zoom: 6 // starting zoom
 		});
+
+		// Add navigation widget https://maplibre.org/maplibre-gl-js-docs/example/navigation/ 
+		map.addControl(new maplibregl.NavigationControl());
+
+		// Show coordinates under mouse https://maplibre.org/maplibre-gl-js-docs/example/mouse-position/
+	    map.on('mousemove', function (e) {
+			document.getElementById('info').innerHTML =
+			// e.lngLat is the longitude, latitude geographical position of the event
+			JSON.stringify(e.lngLat.wrap());
+			});
+		
+		// Load remote GeoJSON
+		map.on('load', function () {
+			map.addSource('some id', {
+				type: 'geojson',
+				data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_ports.geojson'
+				});
+			});
+		map.addLayer({
+	        'id': 'some_id',
+	        'type': 'symbol',
+	        'source':'some_id',
+	    });
+
+
+
 	</script>
 </body>
