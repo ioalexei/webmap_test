@@ -31,14 +31,14 @@
 
 	// pmtiles 
 	map.on('load', function () {
-		map.addSource('shops_banks', {
+		map.addSource('protomaps', {
 		'type': 'vector',
-		'url': 'pmtiles://t.51n3w.xyz/shops_banks.pmtiles'
+		"tiles": ["t.51n3w.xyz/adm2_markets/{z}/{x}/{y}.mvt"]
 	});
 		map.addLayer({
 			'id':'markets_lyr', 
 			'type': 'circle',
-			'source':'shops_banks', 
+			'source':'protomaps', 
 			'source-layer':'shop_banks', 
 			'layout':{},
 			'paint':{
