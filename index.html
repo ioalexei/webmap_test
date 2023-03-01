@@ -35,23 +35,24 @@
             throw new Error("To load the map, you must replace YOUR_MAPTILER_API_KEY_HERE first, see README");
         });
         // Define a source before using it to create a new layer
+        map.on('load', function () {
+            map.addSource('tur_adm2', {
+                type: 'vector',
+                data: 'https://api.maptiler.com/tiles/9b4afcdc-8b87-45c0-92b4-73106053d8f3/{z}/{x}/{y}.pbf?key=${key}'
+            });
 
-        map.addSource('tur_adm2', {
-            type: 'vector',
-            data: 'https://api.maptiler.com/tiles/9b4afcdc-8b87-45c0-92b4-73106053d8f3/{z}/{x}/{y}.pbf?key=${key}'
-        });
-
-        map.addLayer({
-            id: 'tur_adm2',
-            // References the GeoJSON source defined above
-            // and does not require a `source-layer`
-            source: 'tur_adm2',
-            type: 'polygon',
-            layout: {
-            // Set the label content to the
-            // feature's `name` property
-                text-field: ['get', 'name']
-            }
+            map.addLayer({
+                id: 'tur_adm2',
+                // References the GeoJSON source defined above
+                // and does not require a `source-layer`
+                source: 'tur_adm2',
+                type: 'polygon',
+                layout: {
+                // Set the label content to the
+                // feature's `name` property
+                    text-field: ['get', 'name']
+                }
+            });
         });
     </script>
 </body>
