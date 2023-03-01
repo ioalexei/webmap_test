@@ -1,60 +1,68 @@
 <head>
-	<meta charset="utf-8" />
-    <title>MapLibre test</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-	<script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
-	<link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
+<meta charset="utf-8" />
+<title>Add a default marker</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://unpkg.com/pmtiles@2.5.0/dist/index.js"></script>
+<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
 </head>
+
 <body>
-	<style type="text/css">
-		#info {
-		display: block;
-		position: relative;
-		margin: 0px auto;
-		width: 50%;
-		padding: 10px;
-		border: none;
-		border-radius: 3px;
-		font-size: 12px;
-		text-align: center;
-		color: #222;
-		background: #fff;
-		}
-	</style>
-	<div id='map' style='width: 98%; height: 98%;'></div>
-	<pre id="info"></pre>
-	<script>
-		var map = new maplibregl.Map({
-		container: 'map',
-		style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
-		center: [36.5, 37.5], // starting position [lng, lat]
-		zoom: 6 // starting zoom
-		});
+<div id="map"></div>
 
-		// Add navigation widget https://maplibre.org/maplibre-gl-js-docs/example/navigation/ 
-		map.addControl(new maplibregl.NavigationControl());
+<script>
+	var map = new maplibregl.Map({
+	container: 'map',
+	style: 'https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=4c2104b1-b9f9-49bf-bb6a-b5103c46ad85', // stylesheet location
+	center: [36.5, 37.5], // starting position [lng, lat]
+	zoom: 6 // starting zoom
+	});
 
-		// Show coordinates under mouse https://maplibre.org/maplibre-gl-js-docs/example/mouse-position/
-	    map.on('mousemove', function (e) {
-			document.getElementById('info').innerHTML =
-			// e.lngLat is the longitude, latitude geographical position of the event
-			JSON.stringify(e.lngLat.wrap());
-			});
-		
-		// Load remote GeoJSON
-		map.on('load', function () {
-			map.addSource('some id', {
-				type: 'geojson',
-				data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_ports.geojson'
-				});
-			});
+	// Add navigation widget https://maplibre.org/maplibre-gl-js-docs/example/navigation/ 
+	map.addControl(new maplibregl.NavigationControl());
+
+	// load pmtiles plugin 
+	let protocol = new pmtiles.Protocol();
+	maplibregl.addProtocol("pmtiles",protocol.tile);
+
+	// pmtiles 
+	map.on('load', function () {
+		map.addSource('shops_banks', {
+		'type': 'vector',
+		'url': 'pmtiles://t.51n3w.xyz/shops_banks.pmtiles'
+	});
 		map.addLayer({
-	        'id': 'some_id',
-	        'type': 'symbol',
-	        'source':'some_id',
-	    });
+			'id':'markets_lyr', 
+			'type': 'circle',
+			'source':'shops_banks', 
+			'source-layer':'shop_banks', 
+			'layout':{},
+			'paint':{
+				'circle-radius': 2,
+				'circle-color': '#B42222'
+			}
+		});
+	});
+	// map.on('load', function () {
+	// 	map.addSource('tur_adm2', {
+	// 	'type': 'vector',
+	// 	'url': 'https://api.maptiler.com/tiles/9b4afcdc-8b87-45c0-92b4-73106053d8f3/tiles.json?key=jHKRGcVLQieliF2glneL'
+	// 	});
+	// 	map.addLayer({
+	// 	'id': 'lyr',
+	// 	'type': 'line',
+	// 	'source': 'tur_adm2',
+	// 	'source-layer': 'tur_adm2',
+	// 	'layout': {},
+	// 	'paint': {
+	// 	'line-color': '#088'
+	// 	}
+	// 	});
+	// 	});
 
-
-
-	</script>
+</script>
 </body>
