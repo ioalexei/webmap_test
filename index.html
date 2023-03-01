@@ -42,9 +42,9 @@
             type: 'vector',
             url: `https://api.maptiler.com/tiles/9b4afcdc-8b87-45c0-92b4-73106053d8f3/tiles.json?key=wxpK4bEKudb9iRmmpInj`
         });
-        map.addSource('tur_adm2_pop', {
+        map.addSource('hatay', {
             type: 'geojson',
-            url: `https://github.com/ioalexei/webmap_test/blob/main/GeoJSON/tur_adm2_pop.geojson`
+            url: `https://api.maptiler.com/data/04a4f9b5-139d-4a4b-8c57-c6016d584aec/features.json?key=jHKRGcVLQieliF2glneL`
         });
     map.addLayer({
         'id': 'adm2',
@@ -56,9 +56,9 @@
         }
     });
     map.addLayer({
-        'id': 'adm2_pop',
+        'id': 'adm2_v2',
         'type': 'line',
-        'source':'tur_adm2_pop',
+        'source':'hatay',
         'paint': {
             'line-color': '#000000',
             'line-width': 2
