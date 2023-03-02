@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Add a default marker</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://unpkg.com/pmtiles@2.5.0/dist/index.js"></script>
+<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script>
+	var map = new maplibregl.Map({
+	container: 'map',
+	style: 'https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=4c2104b1-b9f9-49bf-bb6a-b5103c46ad85', // stylesheet location
+	center: [36.5, 37.5], // starting position [lng, lat]
+	zoom: 6 // starting zoom
+	});
+
+	// Add navigation widget https://maplibre.org/maplibre-gl-js-docs/example/navigation/ 
+	map.addControl(new maplibregl.NavigationControl());
+
+	// load pmtiles plugin 
+	let protocol = new pmtiles.Protocol();
+	maplibregl.addProtocol("pmtiles",protocol.tile);
+
+	// pmtiles 
+	//let PMTILES_URL = "https://t.mapsmapsmaps.uk/adm2_markets.pmtiles";
+    let PMTILES_URL = "https://ioalexei.github.io/adm2_markets.pmtiles";
+    const p = new pmtiles.PMTiles(PMTILES_URL)
+
+    // this is so we share one instance across the JS code and the map renderer
+    protocol.add(p);
+
+    // we first fetch the header so we can get the center lon, lat of the map.
+    p.getHeader().then(h => {
+        const map = new maplibregl.Map({
+            container: 'map',
+            zoom: h.maxZoom-2,
+            center: [h.centerLon, h.centerLat],
+            style: {
+                version:8,
+                sources: {
+                    "example_source": {
+                        type: "vector",
+                        url: "pmtiles://" + PMTILES_URL,
+                        attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+                    }
+                },
+                layers: [
+                    {
+                        "id":"adm2",
+                        "source": "example_source",
+                        "source-layer":"tur_adm2",
+                        "type": "fill",
+                        "paint": {
+                            "fill-color": "steelblue"
+                        }
+                    }, 
+                    {
+                        "id":"markets",
+                        "source": "example_source",
+                        "source-layer":"markets",
+                        "type": "circle"
+                    }
+                ]
+            }
+        });
+        map.showTileBoundaries = true;
+    })
+</script>
+</body>
+</html>
